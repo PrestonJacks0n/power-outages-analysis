@@ -1,4 +1,3 @@
-EECS 398 Final Project (exploratory analysis of power outage data)
 # Duration of Power Outages Analysis
 
 by Preston Jackson (prestoj@umich.edu)
