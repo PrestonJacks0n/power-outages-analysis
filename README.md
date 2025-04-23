@@ -4,7 +4,7 @@ by Preston Jackson (prestoj@umich.edu)
 
 ---
 
-## Introduction
+## Introduction (GOT BEHIND ON ADDING STUFF TO WEBSITE, SO IF YOU LOOK AT THIS BEFORE 6 AM ON 4/23 HAVE MERCY, IM INCLUDING EVERYTHING SOON)
 
 In this project, I studied (FILL IN) the effectiveness of spice challenges in building team morale.
 
