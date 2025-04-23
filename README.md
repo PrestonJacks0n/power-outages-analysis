@@ -93,27 +93,47 @@ The above plot is the relation between number of outages and customers affected,
 
 ## Framing a Prediction Problem
 
-Here's what a Markdown table looks like. Note that the code for this table was generated _automatically_ from a DataFrame, using
+**My Prediction Problem:** Can I predict the duration of weather caused power outages?
 
-```py
-print(counts[['Quarter', 'Count']].head().to_markdown(index=False))
-```
+This is a regression problem!
 
-| Quarter     |   Count |
-|:------------|--------:|
-| Fall 2020   |       3 |
-| Winter 2021 |       2 |
-| Spring 2021 |       6 |
-| Summer 2021 |       4 |
-| Fall 2021   |      55 |
+The response variable is OUTAGE.DURATION and I chose it because as I said before, it can be crucial to have an idea of when you will get power back up and available. 
+
+I am using RMSE as my metric to evaluate. I felt that this would be best because I need to know how much I am missing the duration time by. I want to minimize that value, meaning the duration I predict is close to actual duration.
+
+The data I end up using is month, anomaly level, climate region, and customers affected. These would all be datapoints that should be somewhat easily attainable right away when a power outage is detected. 
 
 ---
 
 ## Baseline Model
 
+I trained a linear regression model to predict the numeric outcome OUTAGE.DURATION.HOURS (duration of the power outage), using: MONTH and CLIMATE.REGION.
+I implemented this using a scikit-learn pipeline with a ColumnTransformer to encode categorical variables, followed by a LinearRegression estimator.
+Month is nominal and was one hot encoded. Climate Region is also nominal and one hot encoded. 
+
+My model achieved RMSE: 95.35554416361052 and R² Score: -0.09404484757382425. This means that my model is objectively not good. I would be better off just predicting a mean value. A RMSE is really just not great. 
 
 ---
 ## Final Model
 
+In the improved model, I added two new features: CUSTOMERS.AFFECTED (Quantitative) and ANOMALY.LEVEL (Quantitative).
+
+My thoughts were that outages affecting more people may take longer to resolve due to coordination efforts, but also they could take less time due to priority. Next, I thought that higher anomaly levels would correspond to more intense weather conditions, causing outages with longer restoration times.
+
+I used Ridge Regression, which is the regularized version of linear regression that aims to stop overfitting. This is especially useful when multicollinearity is present, which can be a concern since I one-hot encoded more than one categorical feature. My decicion stemmed from me knowing that regularization can improve coefficient estimates, especially when combining several categorical and numerical features.
+
+So:
+
+Categorical features (MONTH, CLIMATE.REGION) were one-hot encoded.
+
+Numerical features (CUSTOMERS.AFFECTED, ANOMALY.LEVEL) were standardized using StandardScaler.
+
+Hyperparameter selection:
+
+I used GridSearchCV over the alpha parameter of Ridge. With  Negative RMSE (meaning low RMSE is better).
+
+Possible alphas: [0.01, 0.1, 1.0, 10.0, 100.0]
+
+My model achieved RMSE: 94.35 and R² Score: -0.071 with the best alpha being 10.0. Sadly, this was not much better than my baseline, but did see a slight improvement. Sadly my path of logic did not play out and this model was a bit of a let down. 
 
 ---
