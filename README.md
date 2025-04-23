@@ -4,7 +4,7 @@ by Preston Jackson (prestoj@umich.edu)
 
 ---
 
-## Introduction (GOT BEHIND ON ADDING STUFF TO WEBSITE, SO IF YOU LOOK AT THIS BEFORE 6 AM ON 4/23 HAVE MERCY, IM INCLUDING EVERYTHING SOON)
+## Introduction
 
 In this project, I studied a dataset containing information about power outages in the continental U.S from 2000 to 2016. The data has information focused on the geographical location of the outages, regional climate information, land-use characteristics, electricity consumption patterns, and economic characteristics of the states affected by the outages. I spent much time with the data and pondered questions such as:
 1. What is the relation between state populations and number of power outages?
@@ -32,7 +32,7 @@ The dataset of focus consists of 1533 rows. The columns that I felt would be rel
 | POPULATION              | Population in the U.S. state in a year |
 
 
-When I did my initial data cleaning I didn't narrow down to the columns above right away. But, I did drop some columns right away. Those being:
+When I did my initial data processing I didn't narrow down to the columns above right away. But, I did drop some columns right away. Those being:
 
 | Column | Reasoning |
 | -----------              | ----------- |
@@ -48,8 +48,46 @@ When I did my initial data cleaning I didn't narrow down to the columns above ri
 
 ## Data Cleaning and Exploratory Data Analysis
 
-`<iframe src="assets/10-80-enrollment.html" width=800 height=600 frameBorder=0></iframe>`
-(REPLACE)
+The data cleaning steps that I took started with turning the excel sheet into a dataframe, this involved skipping the empty rows. Next, I had to reset the row indices. After that I removed the initial columns I felt I didn't need as stated right above this section. Outside this, my main two data cleaning steps were 1. creating a new dataframe with just the columns I wanted, I did this after creating a few graphs and getting a better feel for the data. 2. imputing data for the customers affected column. 
+
+### Imputing Data
+I found that the column containing customers affected was missing 443/1533 = 0.29, so almost 29% of its values. Here are the distrubutions before and after:
+
+<iframe src="assets/customers-affected-boxplot.html" width=800 height=600 frameBorder=0></iframe>
+
+I used median imputation strategy based on state and causal groups. I did this assuming that the number of customers affected by a power outage is heavily influenced by location and cause.
+
+1. Primary strategy: For each missing value, I tried to impute using the median number of customers affected for the combo of POSTAL.CODE and CAUSE.CATEGORY. The goal was to use reasonable numbers for each region and cause.
+
+2. Fallback strategy: If no such comboexisted, I used the state median, assuming that region median was next best in filling a value for affected.
+
+3. Final fallback: If neither of the imputations above worked due to lack of data, I used the global median across the dataset to fill the missing value.
+
+My tiered method allowed for state and cause based imputations when possible, falling back to more general numbers when needed. It reduced the natural variation slightly, but aimed to minimize the introduction of bias and affects of outliers. 
+
+### Visualizing Data
+
+The following are relevant plots I generated while trying to grow my knowledge of the data and trying to understand what influences outage duration:
+
+<iframe src="assets/count-cause.html" width=800 height=600 frameBorder=0></iframe>
+
+The above plot is the distrubution of outages across the CAUSE.CATEGORY column. This helped me learn that the cause of outages was heavily dominated by severe weather and intentional attacks. I followed up on this graph by looking at the distrubution of outages across the CAUSE.CATEGORY.DETAIL column. This proved less fruitful, as the column had no consitency in labels: snow/ice storm vs. snow/ice vs. winter storm. For reference, here is the last couple items from looking at value counts of that column. 
+
+| Detail | Count |
+| -----------              | ----------- |
+| HVSubstation interruption | 1 |
+| cables                    | 1 |
+| Petroleum                 | 1 |
+| thunderstorm; islanding   | 1 |
+| failure                   | 1 |
+
+<iframe src="assets/statePop-count.html" width=800 height=600 frameBorder=0></iframe>
+
+The above plot is the relation between number of outages and state population. This helped me learn that there was a trend that as population increased, so did the number of outages. This piece of info may not seem super attached to the question, but it helped lead me to the intuition that number of people affected might be important. 
+
+<iframe src="assets/aggregate.html" width=800 height=600 frameBorder=0></iframe>
+
+The above plot is the relation between number of outages and customers affected, with a grouping by cause. This helped me learn how the data was spread across the different causes, and that I wanted to focus on specifically the severe weather data for my prediction model. 
 
 ---
 
