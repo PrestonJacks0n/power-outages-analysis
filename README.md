@@ -1,3 +1,5 @@
+PLEASE REFER TO THE LINK TO THE RIGHT TO VIEW THE REPORT IN IT'S PROPER FORM
+
 # Duration of Power Outages Analysis
 
 by Preston Jackson (prestoj@umich.edu)
